@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untranslation Attack Demo Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        header {
+            background-color: #c0d6f8;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            /* font-family: "Times New Roman", Times, serif; */
+            font-size: 2em;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #4b4b4b;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            border-bottom: 2px solid #96bbec;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #96bbec;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #75a6e6;
+        }
+
+        .file-input {
+            padding: 10px 0;
+        }
+
+        .result-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .result-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            width: 45%;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #96bbec;
+            color: white;
+        }
+
+        audio {
+            width: 250px;
+            height: 50px;
+        }
+
+        td {
+            padding: 6px;
+        }
+
+        .grey_tr {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <h1 style="text-align: center; padding-left: 32px;padding-right: 32px;padding-top: 20px;">When Translators
+            Refuse to Translate: A
+            Novel Attack to <br>
+            Speech Translation Systems</h1>
+        <h2 style="font-size: 1.5em;text-align: center;padding-top: 20px;padding-bottom: 20px;">Anonymous Authors</h2>
+        <div style="text-align: center;">
+            <img src="imgs/Introduction_comparison.jpg" alt="Abstract" style="width: 50%;">
+        </div>
+        <!-- Abstract Section -->
+        <div class="section" id="Abstract">
+            <h2 class="section-title">Abstract</h2>
+            <p style="text-indent: 0em;"> Speech translation, which converts a spoken language into another spoken or
+                written language, has
+                experienced rapid
+                advance recently. However, the security in this domain remains underexplored. In this work, we uncover a
+                novel security threat unique to speech translation systems, which is
+                dubbed "untranslation attack". We observe that state-of-theart (SOTA) models, despite their strong
+                translation capabilities, exhibit an inherent tendency to output the content in
+                the original speech language rather than the desired target
+                language. Leveraging this phenomenon, we propose an attack
+                model that deceives the system into outputting the original
+                language content instead of translating it. Interestingly, we
+                find that this approach achieves significant attack effectiveness with minimal overhead compared to
+                traditional semantic
+                perturbation attacks: it achieves a high attack success rate of
+                87.5% with a perturbation budget of as low as 0.001. Furthermore, we extend this approach to develop a
+                universal perturbation attack, successfully testing it in the physical world.</p>
+        </div>
+
+
+
+        <div class="section" id="sample_level_attack">
+            <h2 class="section-title">Sample Level Attack</h2>
+            <p>
+                We present adversarial examples in a sample-level attack scenario. Audio samples were randomly selected from the Common Voice Delta Segment 17.0 English dataset and the MuST-C release 3 dataset. Using the proposed untranslation attack, we generated adversarial examples with varying perturbation budgets. These adversarial attacks were tested on state-of-the-art speech translation models, including Seamless M4T v2 Large and Seamless Expressive.
+            </p>
+            <div class="audio-sample">
+                <h3 style="padding-bottom: 10px;padding-top: 10px;">Seamless M4T v2 Large</h3>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Setting</th>
+                            <th>Audio Input</th>
+                            <th>Translation output (text)</th>
+                            <th>Translation output (audio)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>original</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Es liegt nordöstlich der Santa Teresa Hills und des Almadin Valley.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.0001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Almaden Bay Lake.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.0001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.0005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Almaden Boulevard.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.0005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Elmarden Bay Cliffs.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Almaty moor.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.01</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.01_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>The cut is just northeast of the Santa Teresa Hills and the Almaden Mall.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.01_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.05</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.05_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the San Teresa Hills and the Almaden Valleys.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.05_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.1</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.1_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It lies just northeast of the Santa Teresa Hills and the Almaden Valley.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m0_b0.1_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+                <br>
+
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Setting</th>
+                            <th>Audio Input</th>
+                            <th>Translation output (text)</th>
+                            <th>Translation output (audio)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>original</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Wer wird etwas garantieren, das buchstäblich Milliardenmal größer ist als jede Art von
+                                Abfall, den man sich in Bezug auf Nukleare oder andere Dinge vorstellt?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.0001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.0001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.0005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's gonna guarantee something that is literally billions of times larger than any type
+                                of waste you think of in terms of nuclear or other things? Wer's gonna guarantee
+                                something that is literally billions of times larger than any type of waste you think of
+                                in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.0005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things? Wer's going to guarantee
+                                something that is literally billions of times larger than any type of waste you think of
+                                in terms of nuclear or other.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.01</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.01_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.01_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.05</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.05_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you can think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.05_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.1</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.1_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m0_b0.1_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="audio-sample">
+                <h3 style="
+                    padding-bottom: 10px;
+                    padding-top: 10px;
+                ">Seamless Expressive</h3>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Setting</th>
+                            <th>Audio Input</th>
+                            <th>Translation output (text)</th>
+                            <th>Translation output (audio)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>original</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Es liegt kurz nordöstlich der Santa Teresa Hügel und des Almaden-Tals.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.0001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Almaden Valley.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.0001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.0005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Almaden Valleys.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.0005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Almaty Valley.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast above the Santa Teresa Hills and the Almaden Bowage.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.01</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.01_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast of the Santa Teresa Hills and the Al Maden Bawi.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.01_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.05</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.05_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast above the Santa Teresa Hills and the Almaty Valley.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.05_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.1</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.1_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It is just northeast above the Santa Teresa Hills and the Almaden Valley.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s0_m1_b0.1_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+                <br>
+
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Setting</th>
+                            <th>Audio Input</th>
+                            <th>Translation output (text)</th>
+                            <th>Translation output (audio)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>original</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Wer wird etwas garantieren, das buchstäblich Milliardenmal größer ist als jede Art von
+                                Abfall, den man sich vorstellt, in Bezug auf Kernkraft oder andere Dinge?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.0001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.0001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.0005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.0005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.0005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.001</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.001_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.001_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.005</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.005_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.005_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.01</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.01_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.01_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.05</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.05_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.05_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>budget = 0.1</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.1_adv.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Who's going to guarantee something that is literally billions of times larger than any
+                                type of waste you think of in terms of nuclear or other things?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/sl_s1_m1_b0.1_output.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+        <!-- Baseline Untargeted attack Section -->
+        <div class="section" id="baseline_untargeted">
+            <h2 class="section-title">Baseline Untargeted Attack Samples</h2>
+            <p>
+                We demonstrate the examples from Table 1 of the Motivation section, showcasing adversarial audio generated by traditional untargeted attacks alongside their corresponding translation outputs. Our findings indicate that traditional attacks, which aim to simply alter the translation, generally have a limited impact on the semantic meaning of the output, thereby weakening the effectiveness of the attack. In contrast, our proposed untranslation attack does not perturb the semantics but instead misleads the model into outputting the original language, exploiting the language barrier to ensure the translation unintelligible to the user.
+            </p>
+
+
+            <div class="audio-sample">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Original Audio</th>
+                            <th>Original Translation Output</th>
+                            <th>Attacked Input Audio</th>
+                            <th>Attacked Translation output</th>
+                            <th>Semantic Similarity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s0_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>But the revolution is holding back this development.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s0.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Even the revolution frames the development.</td>
+                            <td>0.711</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s1_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>The   agency is responsible, throughout the territory, for the public
+                                service of   welcoming foreigners.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s1.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>In all these territories, the   agency is responsible for the reception
+                                of stranded persons by the public   service.</td>
+                            <td>0.679</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s2_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>This is   in everyone's interest, not mine.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s2.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>It's in everyone's best   interest, not mine.</td>
+                            <td>0.826</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s3_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Chasing   him away from a fugitive who jumps into the ditch.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s3.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>He chases him away from a   fugitive who jumps into the ditch.</td>
+                            <td>0.895</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s4_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Bonne   is located in Danmas.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s4.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Bonn is located in Damascus.</td>
+                            <td>0.676</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s5_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>On this occasion, he was made a knight.</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s5.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>on this occasion, and then the   cavalry.</td>
+                            <td>0.415</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s6_original.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Does   your arm hurt you?</td>
+                            <td>
+                                <audio controls>
+                                    <source src="audio_samples/ut_s6.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td>Is your arm hurting?</td>
+                            <td>0.923</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+</body>
+
+</html>
